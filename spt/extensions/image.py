@@ -6,10 +6,6 @@ class Image:
     def __init__(self, image_file):
         self.image_file = Path(image_file)
 
-    def format(self, format_to="dds"):
-        if format_to == "dds":
-            self.formatToDds()
-    
     def crop(self):
         pass
     
