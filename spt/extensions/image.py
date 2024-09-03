@@ -9,7 +9,12 @@ class Image:
     def crop(self):
         pass
     
-    def formatToDds(self, new_file):
+    def formatToDds(self, new_file:Path):
+        """Formats the image file stored in the class to the DDS format required by Stellaris
+
+        Args:
+            new_file (Path): The path to the new filename/location for the DDS file
+        """
         command = [
             "magick",
             "-format",

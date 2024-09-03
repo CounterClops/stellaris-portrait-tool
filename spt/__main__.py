@@ -59,6 +59,7 @@ if __name__ == "__main__":
         action="store_true",
         help="Do not convert any images"
     )
+    ### Debugging
     parser.add_argument(
         "--logging",
         dest="logging",
@@ -66,6 +67,7 @@ if __name__ == "__main__":
         default="INFO",
         help="Logging mode to use"
     )
+    ### Config
     parser.add_argument(
         "-g",
         "--generate-configs",
@@ -73,16 +75,34 @@ if __name__ == "__main__":
         action="store_true",
         help="Generate configs for matching files"
     )
+    parser.add_argument(
+        "--config-prefix",
+        dest="config_prefix",
+        type=str,
+        help="The prefix to be used for the config files"
+    )
 
+    ### Configure SPT with params ###
     args = parser.parse_args()
 
     logger = setup_logger(mode=args.logging)
 
+    spt_params = {
+        "source_folder": args.source_folder,
+        "output_folder": args.output_folder,
+        "conflict_resolution_method": args.conflict_resolution_method
+    }
+
+    if args.config_prefix:
+        spt_params["config_prefix"] = args.config_prefix
+
+    ### Start tool execution ###
     spt = StellarisPortraitTool(
-        source_folder = args.source_folder,
-        output_folder = args.output_folder,
-        conflict_resolution_method = args.conflict_resolution_method,
+        **spt_params
     )
     
     if not args.skip_image_convert:
         spt.bulkConvertImages()
+    
+    if args.generate_configs:
+        spt.bulkGenerateConfigs()
