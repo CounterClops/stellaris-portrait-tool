@@ -28,7 +28,7 @@ This tool assumes that you've organised your original portrait files. The way I'
 
 ### Source
 ```
-.
+source
 └── gfx
     └── models
         └── portraits
@@ -48,10 +48,15 @@ This tool assumes that you've organised your original portrait files. The way I'
                 ├── ork_ruler_00.png
                 └── ork_ruler_01.png
 ```
-If you then run the tool with the example given prior under **Example of using the tool** with the above sturcture inside the source/ folder, you'd get the below output
+If you then run the tool with the below command
+```
+python spt -s source/ -o output/ --file-conflict replace --generate-configs --config-prefix "example"
+```
+You'll get the below output in the provided `output/` folder
+
 ### Output
 ```
-.
+output
 └── gfx
     ├── models
         └── portraits
