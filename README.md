@@ -8,7 +8,7 @@ A basic tool I've used to generate basic portrait packs for usage with friends. 
 ## Install
 ### Requirements
 - Python >= 3.10
-- ImageMagick(https://imagemagick.org/)
+- [ImageMagick](https://imagemagick.org/)
 
 ### Example of using the tool
 In the below examples I've made spt available in the path, this can be as simple as putting the SDT folder from this project into the directory you're running the command from.
