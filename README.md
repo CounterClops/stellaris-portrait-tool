@@ -40,7 +40,7 @@ This tool assumes that you've organised your original portrait files. The way I'
                 ├── tau_pop_01.png
                 └── tau_ruler_00.png
             └── orks
-                ├── invisible/
+                ├── bigga/
                     ├── ork_leader_00.png
                     ├── ork_leader_01.png
                     └── ork_leader_02.png
