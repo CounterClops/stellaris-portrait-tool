@@ -1,6 +1,8 @@
 # stellaris-portrait-tool
 A basic tool I've used to generate basic portrait packs for usage with friends. You still need to do a bit of work to get the config files as you want, but this tool allows me to quickly and easily bulk convert my PNG images to DDS, and then generate the desired portrait config files, with their correct filepath. Just takes a lot of the tediousness out of it.
 
+This doesn't make a perfect or finished mod, but the goal is to provide a basic starting point that will at least load in the game. You can tweak from there.
+
 ## Features
 - Bulk convert PNG images to DDS
 - Bulk generate portrait config files based on created DDS files
@@ -57,6 +59,13 @@ You'll get the below output in the provided `output/` folder
 ### Output
 ```
 output
+├── common
+    ├── portrait_categories
+        └── pya_mod_category.txt
+    ├── species_classes
+        └── pya_species_class.txt
+    └── portrait_sets
+        └── pya_mod_set.txt
 └── gfx
     ├── models
         └── portraits
