@@ -95,9 +95,13 @@ class StellarisPortraitTool:
     def bulkGenerateConfigs(self):
         """Bulk generate configs for Stellaris portraits based off converted image files
         """
-        portraits = config.Portraits(
-            source_path=self.output_folder,
-            mod_prefix=self.config_prefix,
-            conflict_resolution_method=self.conflict_resolution_method
-        )
-        portraits.generate()
+        params = {
+            "source_path": self.output_folder,
+            "mod_prefix": self.config_prefix,
+            "conflict_resolution_method": self.conflict_resolution_method
+        }
+        config.Portraits(**params).generate()
+        config.PortraitSets(**params).generate()
+        config.SpeciesClass(**params).generate()
+        config.SpeciesNames(**params).generate()
+        config.PortraitCategories(**params).generate()

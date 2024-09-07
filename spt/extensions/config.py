@@ -9,15 +9,23 @@ from . import templates
 
 # https://pdx.tools/blog/a-tour-of-pds-clausewitz-syntax
 
-class Portraits:
+class Configs:
     def __init__(self, source_path, mod_prefix:str="", conflict_resolution_method:str="stop"):
         self.source_path = Path(source_path)
-        self.image_root_path = self.source_path / Path("gfx/models/portraits")
-        self.config_root_path = self.source_path / Path("gfx/portraits/portraits")
-        self.config_store = {}
+        self.config_store = {
+            # Example
+            # group_id: {
+            #     'filename': "filename.txt", 
+            #     'content': {}
+            # }
+        }
         self.mod_prefix = mod_prefix
         self.conflict_resolution_method = conflict_resolution_method
-    
+        try:
+            self.setup()
+        except AttributeError as e:
+            logging.debug(f"Setup function error (Setup function may not exist) {e}")
+
     @staticmethod
     def replaceKeySeperators(key_string:str) -> str:
         """Replace seperators in keys with _ characters
@@ -67,29 +75,46 @@ class Portraits:
             new_parts = []
             for part in line_parts[:-1]:
                 new_parts.append(part.replace('"', '').replace("'", ''))
-            new_parts.append(line_parts[-1])
+
+            last_part = line_parts[-1]
+            quote_substrings = [
+                " ",
+                "/"
+            ]
+            if any(substring in last_part.strip(" ") for substring in quote_substrings):
+                new_parts.append(last_part)
+            else:
+                new_parts.append(last_part.replace('"', '').replace("'", ''))
         
             cleaned_lines.append("=".join(new_parts)[4:])
 
         string = "\n".join(cleaned_lines)
 
         return string
+    
+    def createSpeciesClassName(self):
+        species_class_name = "_".join([
+            self.mod_prefix,
+            "species",
+            "class"
+        ])
+        return species_class_name
 
-    def createGroupKey(self, file:Path) -> str:
-        """Create a group key based on the file path
+    def createPortraitSetName(self):
+        portrait_set_name = "_".join([
+            self.mod_prefix,
+            "mod",
+            "set"
+        ])
+        return portrait_set_name
 
-        Args:
-            file (Path): The group key for the specific file
-
-        Returns:
-            str: The generated group key
-        """
-        image_relative_path = file.relative_to(self.image_root_path)
-        group_key = str(image_relative_path.parent)
-        group_key = self.replaceKeySeperators(group_key)
-        if self.mod_prefix != "":
-            group_key = "_".join([self.mod_prefix, group_key])
-        return group_key
+    def createPortraitCategoryName(self):
+        portrait_category_name = "_".join([
+            self.mod_prefix,
+            "mod",
+            "category"
+        ])
+        return portrait_category_name
 
     def createVariantPrefix(self, file:Path) -> str:
         """Creates a variant prefix to be used to denote sub classes of a species
@@ -111,42 +136,22 @@ class Portraits:
         variant_prefix = variant_prefix.split("_", 1)[1]
 
         return variant_prefix
+    
+    def createGroupKey(self, file:Path) -> str:
+        """Create a group key based on the file path
 
-    def generateConfigs(self):
-        """Generates the Configs which are stored under each group_key in the config_store of this class
+        Args:
+            file (Path): The group key for the specific file
+
+        Returns:
+            str: The generated group key
         """
-        for file in self.image_root_path.rglob("*.dds"):
-            image_relative_path = file.relative_to(self.source_path)
-            group_key = self.createGroupKey(file=file)
-            variant_prefix = self.createVariantPrefix(file=file)
-
-            if variant_prefix != "":
-                image_ref = "_".join([variant_prefix, file.stem])
-            else:
-                image_ref = file.stem
-
-            if self.mod_prefix != "":
-                config_filename = f"{group_key}.txt"
-            else:
-                config_filename = f"{group_key}.txt"
-
-            if group_key not in self.config_store.keys():
-                self.config_store[group_key] = {'filename': config_filename, 'content': copy.deepcopy(templates.Portraits.root_config)}
-                self.config_store[group_key]['content']['portrait_groups'][group_key] = {
-                    'default': image_ref,
-                    'game_setup': copy.deepcopy(templates.Portraits.portrait_group),
-                    'species': copy.deepcopy(templates.Portraits.portrait_group),
-                    'pop' : copy.deepcopy(templates.Portraits.portrait_group),
-                    'leader': copy.deepcopy(templates.Portraits.portrait_group),
-                    'ruler': copy.deepcopy(templates.Portraits.portrait_group)
-                }
-
-            self.config_store[group_key]['content']['portraits'][image_ref] = {'texturefile': str(image_relative_path)}
-            self.config_store[group_key]['content']['portrait_groups'][group_key]['game_setup']['add']['portraits'].append(image_ref)
-            self.config_store[group_key]['content']['portrait_groups'][group_key]['species']['add']['portraits'].append(image_ref)
-            self.config_store[group_key]['content']['portrait_groups'][group_key]['pop']['add']['portraits'].append(image_ref)
-            self.config_store[group_key]['content']['portrait_groups'][group_key]['leader']['add']['portraits'].append(image_ref)
-            self.config_store[group_key]['content']['portrait_groups'][group_key]['ruler']['add']['portraits'].append(image_ref)
+        image_relative_path = file.relative_to(self.image_root_path)
+        group_key = str(image_relative_path.parent)
+        group_key = self.replaceKeySeperators(group_key)
+        if self.mod_prefix != "":
+            group_key = "_".join([self.mod_prefix, group_key])
+        return group_key
 
     def dumpConfigs(self):
         """Converts the stored configs in this class to pretty printed JSON, which are then converted to Stellaris PDX clausewitz format
@@ -186,3 +191,131 @@ class Portraits:
         """
         self.generateConfigs()
         self.dumpConfigs()
+
+class Portraits(Configs):
+    def setup(self):
+        self.image_root_path = self.source_path / Path("gfx/models/portraits")
+        self.config_root_path = self.source_path / Path("gfx/portraits/portraits")
+
+    def generateConfigs(self):
+        """Generates the Configs which are stored under each group_key in the config_store of this class
+        """
+
+        portrait_files = {}
+
+        for file in self.image_root_path.rglob("*.dds"):
+            image_relative_path = file.relative_to(self.source_path)
+            portrait_group_name = self.createGroupKey(file=file)
+            variant_prefix = self.createVariantPrefix(file=file)
+
+            if variant_prefix != "":
+                image_ref = "_".join([variant_prefix, file.stem])
+            else:
+                image_ref = file.stem
+            
+            try:
+                portrait_files[portrait_group_name]
+            except:
+                portrait_files[portrait_group_name] = {}
+
+            portrait_files[portrait_group_name][image_ref] = {
+                "texturefile": str(image_relative_path)
+            }
+        
+        for portrait_group_name in portrait_files.keys():
+            portrait_refs = list(portrait_files[portrait_group_name].keys())
+            portraits = templates.Portraits(
+                portrait_group_name = portrait_group_name,
+                portrait_refs = portrait_refs,
+                portrait_files = portrait_files[portrait_group_name]
+            )
+
+            config_filename = f"{portrait_group_name}.txt"
+            self.config_store[portrait_group_name] = {
+                'filename': config_filename, 
+                'content': portraits.config
+            }
+
+class PortraitSets(Configs):
+    def setup(self):
+        self.config_root_path = self.source_path / Path("common/portrait_sets")
+        self.config_portraits_path = self.source_path / Path("gfx/portraits/portraits")
+    
+    def generateConfigs(self):
+        portrait_set_name = self.createPortraitSetName()
+        species_class_name = self.createSpeciesClassName()
+
+        portrait_configs = []
+
+        for file in self.config_portraits_path.rglob("*.txt"):
+            config_ref = file.stem
+            portrait_configs.append(config_ref)
+        
+        portrait_sets = templates.PortraitSets(
+            portrait_set_name=portrait_set_name,
+            species_class_name=species_class_name,
+            portraits=portrait_configs
+        )
+
+        config_filename = f"{portrait_set_name}.txt"
+
+        self.config_store[portrait_set_name] = {
+            'filename': config_filename, 
+            'content': portrait_sets.config
+        }
+
+class SpeciesClass(Configs):
+    def setup(self):
+        self.config_root_path = self.source_path / Path("common/species_classes")
+        self.config_portraits_path = self.source_path / Path("gfx/portraits/portraits")
+    
+    def generateConfigs(self):
+        species_class_name = self.createSpeciesClassName()
+
+        portrait_configs = []
+
+        for file in self.config_portraits_path.rglob("*.txt"):
+            config_ref = file.stem
+            portrait_configs.append(config_ref)
+
+        species_class = templates.SpeciesClass(
+            species_class_name=species_class_name,
+            portraits=portrait_configs, 
+            archetype="BIOLOGICAL"
+        )
+
+        config_filename = f"{species_class_name}.txt"
+
+        self.config_store[species_class_name] = {
+            'filename': config_filename, 
+            'content': species_class.config
+        }
+
+class SpeciesNames(Configs):
+    def setup(self):
+        self.config_root_path = self.source_path / Path("common/species_names")
+        self.config_portraits_path = self.source_path / Path("gfx/portraits/portraits")
+
+    def generateConfigs(self):
+        pass
+
+class PortraitCategories(Configs):
+    def setup(self):
+        self.config_root_path = self.source_path / Path("common/portrait_categories")
+        self.config_portraits_path = self.source_path / Path("gfx/portraits/portraits")
+    
+    def generateConfigs(self):
+        portrait_category_name = self.createPortraitCategoryName()
+        portrait_set_name = self.createPortraitSetName()
+
+        portrait_categorys = templates.PortraitCategories(
+            category_name=portrait_category_name,
+            portrait_sets=portrait_set_name
+        )
+
+        config_filename = f"{portrait_category_name}.txt"
+
+        self.config_store[portrait_category_name] = {
+            'filename': config_filename, 
+            'content': portrait_categorys.config
+        }
