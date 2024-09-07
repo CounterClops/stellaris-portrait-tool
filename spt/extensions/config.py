@@ -1,8 +1,6 @@
 import logging
 from pathlib import Path
-import copy
 import json
-import re
 import sys
 
 from . import templates
@@ -26,6 +24,11 @@ class Configs:
             self.setup()
         except AttributeError as e:
             logging.debug(f"Setup function error (Setup function may not exist) {e}")
+    
+    def setup(self):
+        """Placeholder, should be replaced by child class
+        """
+        pass
 
     @staticmethod
     def replaceKeySeperators(key_string:str) -> str:
@@ -104,7 +107,7 @@ class Configs:
     def createPortraitSetName(self):
         portrait_set_name = "_".join([
             self.mod_prefix,
-            "mod",
+            "portrait",
             "set"
         ])
         return portrait_set_name
@@ -112,7 +115,7 @@ class Configs:
     def createPortraitCategoryName(self):
         portrait_category_name = "_".join([
             self.mod_prefix,
-            "mod",
+            "portrait",
             "category"
         ])
         return portrait_category_name
@@ -157,7 +160,6 @@ class Configs:
     def dumpConfigs(self):
         """Converts the stored configs in this class to pretty printed JSON, which are then converted to Stellaris PDX clausewitz format
         """
-        pattern = re.compile(r'(\[[^\]]*\])')
 
         for group_key in self.config_store.keys():
             logging.debug(f"Creating config for '{group_key}'")
@@ -186,6 +188,11 @@ class Configs:
             config_filepath.parent.mkdir(parents=True, exist_ok=True)
             with open(config_filepath, "w") as config_file:
                 config_file.write(pretty_config)
+
+    def generateConfigs(self):
+        """Placeholder, should be replaced by child class
+        """
+        pass
 
     def generate(self):
         """Basic function to run the generation and config dump in a single call
@@ -302,7 +309,7 @@ class PortraitCategories(Configs):
 
         portrait_categorys = templates.PortraitCategories(
             category_name=portrait_category_name,
-            portrait_sets=portrait_set_name
+            portrait_sets=[portrait_set_name]
         )
 
         config_filename = f"{portrait_category_name}.txt"

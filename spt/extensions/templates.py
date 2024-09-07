@@ -153,8 +153,6 @@ class PortraitCategories:
         self.config = {
             category_name: {
                 "name": category_name,
-                "sets": [
-                    portrait_sets
-                ]
+                "sets": portrait_sets
             }
         }
