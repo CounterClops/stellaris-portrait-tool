@@ -61,11 +61,11 @@ You'll get the below output in the provided `output/` folder
 output
 ├── common
     ├── portrait_categories
-        └── pya_mod_category.txt
+        └── example_mod_category.txt
     ├── species_classes
-        └── pya_species_class.txt
+        └── example_species_class.txt
     └── portrait_sets
-        └── pya_mod_set.txt
+        └── example_mod_set.txt
 └── gfx
     ├── models
         └── portraits
