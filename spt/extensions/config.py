@@ -10,7 +10,7 @@ from . import templates
 # https://pdx.tools/blog/a-tour-of-pds-clausewitz-syntax
 
 class Configs:
-    def __init__(self, source_path, mod_prefix:str="", conflict_resolution_method:str="stop"):
+    def __init__(self, source_path, mod_prefix:str="", conflict_resolution_method:str="stop", species_archetype:str="BIOLOGICAL"):
         self.source_path = Path(source_path)
         self.config_store = {
             # Example
@@ -21,6 +21,7 @@ class Configs:
         }
         self.mod_prefix = mod_prefix
         self.conflict_resolution_method = conflict_resolution_method
+        self.species_archetype = species_archetype
         try:
             self.setup()
         except AttributeError as e:
@@ -272,16 +273,9 @@ class SpeciesClass(Configs):
     def generateConfigs(self):
         species_class_name = self.createSpeciesClassName()
 
-        portrait_configs = []
-
-        for file in self.config_portraits_path.rglob("*.txt"):
-            config_ref = file.stem
-            portrait_configs.append(config_ref)
-
         species_class = templates.SpeciesClass(
             species_class_name=species_class_name,
-            portraits=portrait_configs, 
-            archetype="BIOLOGICAL"
+            archetype=self.species_archetype
         )
 
         config_filename = f"{species_class_name}.txt"

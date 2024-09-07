@@ -5,12 +5,13 @@ import subprocess
 from extensions import image, config
 
 class StellarisPortraitTool:
-    def __init__(self, source_folder="source", output_folder="output", conflict_resolution_method:str="stop", config_prefix:str=""):
+    def __init__(self, source_folder="source", output_folder="output", conflict_resolution_method:str="stop", config_prefix:str="", species_archetype:str="BIOLOGICAL"):
         self.source_folder = Path(source_folder)
         self.output_folder = Path(output_folder)
         self.conflict_resolution_method = conflict_resolution_method
         self.accepted_image_extensions = [".png"]
         self.config_prefix = config_prefix
+        self.species_archetype = species_archetype
 
         if not self.checkDependencies():
             sys.exit(1)
@@ -98,7 +99,8 @@ class StellarisPortraitTool:
         params = {
             "source_path": self.output_folder,
             "mod_prefix": self.config_prefix,
-            "conflict_resolution_method": self.conflict_resolution_method
+            "conflict_resolution_method": self.conflict_resolution_method,
+            "species_archetype": self.species_archetype
         }
         config.Portraits(**params).generate()
         config.PortraitSets(**params).generate()

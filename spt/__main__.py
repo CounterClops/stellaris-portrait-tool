@@ -81,6 +81,14 @@ if __name__ == "__main__":
         type=str,
         help="The prefix to be used for the config files"
     )
+    parser.add_argument(
+        "--species-archetype",
+        dest="species_archetype",
+        type=str,
+        choices=["BIOLOGICAL", "MACHINE"],
+        default="BIOLOGICAL",
+        help="The species archetype to use for all generated species configs"
+    )
 
     ### Configure SPT with params ###
     args = parser.parse_args()
@@ -90,7 +98,8 @@ if __name__ == "__main__":
     spt_params = {
         "source_folder": args.source_folder,
         "output_folder": args.output_folder,
-        "conflict_resolution_method": args.conflict_resolution_method
+        "conflict_resolution_method": args.conflict_resolution_method,
+        "species_archetype": args.species_archetype
     }
 
     if args.config_prefix:
