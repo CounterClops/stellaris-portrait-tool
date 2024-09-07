@@ -268,7 +268,6 @@ class PortraitSets(Configs):
 class SpeciesClass(Configs):
     def setup(self):
         self.config_root_path = self.source_path / Path("common/species_classes")
-        self.config_portraits_path = self.source_path / Path("gfx/portraits/portraits")
     
     def generateConfigs(self):
         species_class_name = self.createSpeciesClassName()
@@ -288,7 +287,6 @@ class SpeciesClass(Configs):
 class SpeciesNames(Configs):
     def setup(self):
         self.config_root_path = self.source_path / Path("common/species_names")
-        self.config_portraits_path = self.source_path / Path("gfx/portraits/portraits")
 
     def generateConfigs(self):
         pass

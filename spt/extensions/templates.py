@@ -35,7 +35,7 @@ class Portraits:
         }
 
 class PortraitSets:
-    def __init__(self, portrait_set_name:str="mod_portrait_set", species_class_name:str="mod_species_class", portraits:dict=[]):
+    def __init__(self, portrait_set_name:str="mod_portrait_set", species_class_name:str="mod_species_class", portraits:list=[]):
         self.config = {
             portrait_set_name: {
                 "species_class": species_class_name,
@@ -71,39 +71,71 @@ class SpeciesClass:
             self.config = {
                 species_class_name: {
                     "archetype": "MACHINE",
-                    "playable": {
-                        "host_has_dlc": "Synthetic Dawn Story Pack"
-                    },
-                    "randomized": {
-                        "host_has_dlc": "Synthetic Dawn Story Pack",
-                        "NOT": {
-                            "has_global_flag": "game_started"
-                        }
-                    },
                     "possible": {
-                        "authority": {
-                            "OR": {
-                                "value": "auth_machine_intelligence",
-                                "text": "SPECIES_CLASS_MUST_USE_MACHINE_INTELLIGENCE"
+                        "OR": {
+                            "AND": {
+                                "host_has_dlc": "The Machine Age",
+                                "authority": {
+                                    "NOT": {
+                                        "value": "auth_hive_mind"
+                                    }
+                                }
+                            },
+                            "authority": {
+                                "OR": { 
+                                    "value": "auth_machine_intelligence",
+                                    "text": "SPECIES_CLASS_MUST_USE_MACHINE_INTELLIGENCE"
+                                }
                             }
                         }
                     },
                     "possible_secondary": {
-                        "always": "no",
-                        "text": "SECONDARY_SPECIES_CLASS_INVALID"
+                        "OR": {
+                            "AND": {
+                                "host_has_dlc": "The Machine Age",
+                                "civics": {
+                                    "NOT": {
+                                        "value": "civic_machine_servitor"
+                                    }
+                                }
+                            },
+                            "OR": {
+                                "always": "no",
+                                "text": "SECONDARY_SPECIES_CLASS_INVALID"
+                            }
+                        }
                     },
-                    "robotic": "yes",
-                    "gender": "no",
+                    "playable": {
+                        "OR": {
+                            "host_has_dlc": "Synthetic Dawn Story Pack",
+                            "has_machine_age_dlc": "yes"
+                        }
+                    },
+                    "randomized": {
+                        "OR": {
+                            "host_has_dlc": "Synthetic Dawn Story Pack",
+                            "has_machine_age_dlc": "yes"
+                        },
+                        # The create_species effect can't properly take the possible trigger below into account.
+                        # Work around this by disabling this class for species randomization after game start.
+                        "NOT": {
+                            "has_global_flag": "game_started"
+                        }
+                    },
+
+                    "trait": "trait_machine_unit",
+                    "gender": "yes",
                     "use_climate_preference": "no",
                     "portrait_modding": "yes",
-                    "leader_age_min": "2",
-                    "leader_age_max": "10",
+
+                    "leader_age_min": 5,
+                    "leader_age_max": 10,
+
                     "graphical_culture": "synthetics_01",
                     "move_pop_sound_effect": "robot_pops_move",
                     "resources": {}
                 }
             }
-
         else:
             pass
 
