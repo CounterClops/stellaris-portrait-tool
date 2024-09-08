@@ -140,13 +140,31 @@ class SpeciesClass:
             pass
 
 class SpeciesNames:
-    machine_config = {
-        "name": "Machine",
-        "plural": "Machines",
-        "home_planet": "CPU",
-        "home_system": "Motherboard",
-        "name_list": "MACHINE4"
-    }
+    def __init__(self, species_class_name:str="mod_species_class", archetype:str="BIOLOGICAL"):
+        if archetype == "BIOLOGICAL":
+            self.config = {
+                species_class_name: {
+                    "unique_species_variant": {
+                        "name": "Human",
+                        "plural": "Humans",
+                        "home_planet": "Earth",
+                        "home_system": "Sol",
+                        "name_list": "MAM1"
+                    }
+                }
+            }
+        elif archetype == "MACHINE":
+            self.config = {
+                species_class_name: {
+                    "unique_machine_variant": {
+                        "name": "Machine",
+                        "plural": "Machines",
+                        "home_planet": "CPU",
+                        "home_system": "Motherboard",
+                        "name_list": "MACHINE4"
+                    }
+                }
+            }
 
 class PortraitCategories:
     def __init__(self, category_name:str="", portrait_sets:list=[]):

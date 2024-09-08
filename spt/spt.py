@@ -77,7 +77,7 @@ class StellarisPortraitTool:
             if new_file.is_file():
                 match self.conflict_resolution_method:
                     case "stop":
-                        logging.error(f"File conflict: '{file}' already exists, stopping execution")
+                        logging.error(f"File conflict: '{file}' already exists, stopping execution. Check --help if you'd like files to be overrode")
                         sys.exit(1)
                     case "skip":
                         logging.debug(f"File conflict: '{file}' already exists, skipping")
