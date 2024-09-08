@@ -123,7 +123,7 @@ class Configs:
         return False
 
     def cleanConfig(self, string:str) -> str:
-        """Converts the python dict to ua format closer to what Stellaris requires in its config
+        """Converts the python dict to a format closer to what Stellaris requires in its config
 
         Args:
             string (str): The python dict as a pretty printed string
@@ -143,7 +143,7 @@ class Configs:
         cleaned_lines = []
         for line in lines:
             if "=" not in line:
-                cleaned_lines.append(self.removeQuotes(line))
+                cleaned_lines.append(self.removeQuotes(line)[4:])
                 continue
             
             line_parts = line.split("=")
