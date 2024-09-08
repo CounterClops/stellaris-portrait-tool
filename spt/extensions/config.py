@@ -49,6 +49,14 @@ class Configs:
 
     @staticmethod
     def replaceSquareBrackets(string:str) -> str:
+        """Replaces all [] with {} characters in the provided string
+
+        Args:
+            string (str): The string to clear of [] characters
+
+        Returns:
+            str: The string with only {} characters
+        """
         replace_array = [
             ['[', '{'], 
             [']', '}']
@@ -60,6 +68,14 @@ class Configs:
 
     @staticmethod
     def checkRequiredQuotes(string:str) -> bool:
+        """Check if the provided string has any characters that require the string remain quoted
+
+        Args:
+            string (str): The string to check
+
+        Returns:
+            bool: Whether the string should be kept quoted
+        """
         quote_required_characters = [
             " ",
             "/",
@@ -72,6 +88,14 @@ class Configs:
         return quotes_required
 
     def removeQuotes(self, string:str) -> str:
+        """Remove all quotes where allowed in the provided string
+
+        Args:
+            string (str): The string to clear of quote characters where allowed
+
+        Returns:
+            str: The cleaned string
+        """
         replace_array = [
             ['"', ''], 
             ["'", '']
@@ -85,7 +109,15 @@ class Configs:
         return string
 
     def checkQuotedValueKey(self, key:str) -> bool:
-        trimmed_key = key.strip()
+        """Check if the provided key should have its value kept inside of a quote
+
+        Args:
+            key (str): The key to check against the internal self.quoted_value_keys list
+
+        Returns:
+            bool: Whether the key is for a value that should remain quoted
+        """
+        trimmed_key = self.removeQuotes(key.strip())
         if trimmed_key in self.quoted_value_keys:
             return True
         return False
